@@ -3,6 +3,7 @@ package pl.agh.customers.mysql.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import pl.agh.customers.mysql.enums.RoleEnum;
 
 @Builder
 @NoArgsConstructor
@@ -19,11 +20,18 @@ public class UserRoles {
 
     @Getter
     @Setter
-    @Column(name = "username")
-    private String username;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "username", nullable = false)
+    private User user;
 
     @Getter
     @Setter
-    @Column(name = "role")
-    private String role;
+    @Column(name = "role", columnDefinition = "ENUM ('ROLE_USER', 'ROLE_ADMIN')")
+    @Enumerated(EnumType.STRING)
+    private RoleEnum roleEnum;
+
+    public UserRoles(User user, RoleEnum roleEnum) {
+        this.user = user;
+        this.roleEnum = roleEnum;
+    }
 }

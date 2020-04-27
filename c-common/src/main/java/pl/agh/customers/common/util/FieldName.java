@@ -2,11 +2,16 @@ package pl.agh.customers.common.util;
 
 public enum FieldName {
 
-    TITLE("title"),
-    AUTHOR("author"),
-    CATEGORY("category"),
-    PRICE("price"),
-    AVAILABLE("available");
+    USERNAME("username"),
+    PASSWORD("password"),
+    FIRST_NAME("firstName"),
+    LAST_NAME("lastName"),
+    EMAIL("email"),
+    PHONE("phone"),
+    ADDRESS("address"),
+    ENABLED("enabled"),
+    LIMIT("limit"),
+    OFFSET("offset");
 
     private final String name;
 

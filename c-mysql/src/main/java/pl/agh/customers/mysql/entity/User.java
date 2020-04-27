@@ -2,56 +2,42 @@ package pl.agh.customers.mysql.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Set;
 
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Entity
 @Table(name = "user", schema = "customer")
 public class User {
 
     @Id
-    @Getter
-    @Setter
     @Column(name = "username")
     private String username;
 
-    @Getter
-    @Setter
     @Column(name = "password")
     private String password;
 
-    @Getter
-    @Setter
     @Column(name = "first_name")
     private String firstName;
 
-    @Getter
-    @Setter
     @Column(name = "last_name")
     private String lastName;
 
-    @Getter
-    @Setter
     @Column(name = "email")
     private String email;
 
-    @Getter
-    @Setter
     @Column(name = "phone")
-    private Integer phone;
+    private String phone;
 
-    @Getter
-    @Setter
     @Column(name = "address")
     private String address;
 
-    @Getter
-    @Setter
     @Column(name = "enabled")
     private Boolean enabled;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private Set<UserRoles> roles;
 }
