@@ -1,6 +1,7 @@
 package pl.agh.customers.application.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.agh.customers.application.dto.UserPostRequestDTO;
 import pl.agh.customers.application.dto.UserPutRequestDTO;
@@ -21,6 +22,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserRolesRepository userRolesRepository;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
     public UserService(UserRepository userRepository, UserRolesRepository userRolesRepository) {
@@ -33,7 +35,9 @@ public class UserService {
             throw new BadRequestException("Username is used");
         }
         User user = userDTO.toEntity();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user = userRepository.save(user);
+
         UserRoles userRole = new UserRoles(user, RoleEnum.ROLE_USER);
         userRole = userRolesRepository.save(userRole);
 
@@ -73,11 +77,11 @@ public class UserService {
         return null;
     }
 
-    public User updatePassword(String username, String newPassword) throws BadRequestException {
-        Optional<User> userOpt  = userRepository.findById(username);
+    public User updatePassword(String username, String newPassword) {
+        Optional<User> userOpt = userRepository.findById(username);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            user.setPassword(newPassword);
+            user.setPassword(passwordEncoder.encode(newPassword));
             return userRepository.save(user);
         }
         return null;

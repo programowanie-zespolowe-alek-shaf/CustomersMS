@@ -82,7 +82,7 @@ public class UserController {
 
     @RequestMapping(value = "{username}", method = RequestMethod.PATCH, produces = {APPLICATION_JSON})
     public ResponseEntity<Object> updateUserPassword(@PathVariable("username") String username,
-                                                     @RequestParam String newPassword) throws CustomException {
+                                                     @RequestParam String newPassword) {
         User user = userService.updatePassword(username, newPassword);
         if (user == null) {
             return ResponseEntity.notFound().build();
