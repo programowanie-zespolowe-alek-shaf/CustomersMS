@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -12,8 +13,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.agh.customers.mysql.entity.User;
 import pl.agh.customers.mysql.repository.UserRepository;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -40,7 +40,7 @@ public class UpdatePasswordControllerTest {
 
         User user = userRepository.findById("user999").orElse(null);
         assertNotNull(user);
-        assertEquals(user.getPassword(), "newPass");
+        assertTrue(new BCryptPasswordEncoder().matches("newPass", user.getPassword()));
 
         userRepository.save(userBefore);
     }

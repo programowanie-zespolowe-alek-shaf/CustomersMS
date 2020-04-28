@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -67,7 +68,7 @@ public class UpdateUserControllerTest {
         User user = userRepository.findById("user997").orElse(null);
         assertNotNull(user);
         assertEquals("user997", user.getUsername());
-        assertEquals("okon", user.getPassword());
+        assertEquals(userBefore.getPassword(), user.getPassword());
         assertEquals("A", user.getFirstName());
         assertEquals("B", user.getLastName());
         assertEquals("2@c.com", user.getEmail());
