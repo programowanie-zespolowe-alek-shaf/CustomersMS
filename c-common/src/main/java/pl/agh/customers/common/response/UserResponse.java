@@ -13,9 +13,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class UserResponse {
     private String username;
     private String firstName;

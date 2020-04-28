@@ -41,7 +41,7 @@ public class UserController {
             return ResponseEntity.notFound().build();
         } else {
             URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                    .path("/{id}")
+                    .path("/{username}")
                     .buildAndExpand(createdUser.getUsername())
                     .toUri();
 

@@ -5,7 +5,6 @@ import lombok.*;
 import javax.persistence.*;
 import pl.agh.customers.mysql.enums.RoleEnum;
 
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
