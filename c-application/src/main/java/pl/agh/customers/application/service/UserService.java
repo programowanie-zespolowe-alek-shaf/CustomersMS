@@ -52,32 +52,35 @@ public class UserService {
     }
 
     public UserResponse find(String username) {
-        User user = userRepository.findById(username).orElse(null);
-        if (user == null) {
-            return null;
-        }
-        return new UserResponse(user);
+        Optional<User> userOpt = userRepository.findById(username);
+        return userOpt.map(UserResponse::new).orElse(null);
     }
 
     public UserResponse update(String username, UserPutRequestDTO userDTO) throws BadRequestException {
-        User user = userRepository.findById(username).orElseThrow(() -> new BadRequestException("User does not exist"));
+        Optional<User> userOpt = userRepository.findById(username);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setFirstName(userDTO.getFirstName());
+            user.setLastName(userDTO.getLastName());
+            user.setEmail(userDTO.getEmail());
+            user.setPhone(userDTO.getPhone());
+            user.setAddress(userDTO.getAddress());
+            user.setEnabled(userDTO.getEnabled());
 
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
-        user.setEmail(userDTO.getEmail());
-        user.setPhone(userDTO.getPhone());
-        user.setAddress(userDTO.getAddress());
-        user.setEnabled(userDTO.getEnabled());
-
-        user = userRepository.save(user);
-        return new UserResponse(user);
+            user = userRepository.save(user);
+            return new UserResponse(user);
+        }
+        return null;
     }
 
-    public void updatePassword(String username, String newPassword) throws BadRequestException {
-        User user = userRepository.findById(username).orElseThrow(() -> new BadRequestException("User does not exist"));
-
-        user.setPassword(newPassword);
-        userRepository.save(user);
+    public User updatePassword(String username, String newPassword) throws BadRequestException {
+        Optional<User> userOpt  = userRepository.findById(username);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setPassword(newPassword);
+            return userRepository.save(user);
+        }
+        return null;
     }
 
     public User delete(String username) {
