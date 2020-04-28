@@ -2,6 +2,7 @@ package pl.agh.customers.application.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.agh.customers.application.dto.UserPostRequestDTO;
 import pl.agh.customers.application.dto.UserPutRequestDTO;
 import pl.agh.customers.common.exception.BadRequestException;
 import pl.agh.customers.common.response.ListResponse;
@@ -13,9 +14,7 @@ import pl.agh.customers.mysql.enums.RoleEnum;
 import pl.agh.customers.mysql.repository.UserRepository;
 import pl.agh.customers.mysql.repository.UserRolesRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -29,14 +28,18 @@ public class UserService {
         this.userRolesRepository = userRolesRepository;
     }
 
-    public UserResponse create(User user) throws BadRequestException {
-        if (userRepository.existsById(user.getUsername())) {
+    public UserResponse create(UserPostRequestDTO userDTO) throws BadRequestException {
+        if (userRepository.existsById(userDTO.getUsername())) {
             throw new BadRequestException("Username is used");
         }
+        User user = userDTO.toEntity();
         user = userRepository.save(user);
         UserRoles userRole = new UserRoles(user, RoleEnum.ROLE_USER);
-        userRolesRepository.save(userRole);
+        userRole = userRolesRepository.save(userRole);
 
+        Set<UserRoles> userRoles = new HashSet<>();
+        userRoles.add(userRole);
+        user.setRoles(userRoles);
         return new UserResponse(user);
     }
 

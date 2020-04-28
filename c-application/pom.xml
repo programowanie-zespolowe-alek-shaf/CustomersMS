@@ -15,7 +15,7 @@
             <id>localhost</id>
             <properties>
                 <profile.name>localhost</profile.name>
-                <mysql.datasource.url>jdbc:mysql://localhost:3306/customer?autoReconnect=true</mysql.datasource.url>
+                <mysql.datasource.url>jdbc:mysql://localhost:3306/customer?autoReconnect=true&amp;useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC</mysql.datasource.url>
                 <mysql.datasource.username>customer</mysql.datasource.username>
                 <mysql.datasource.password>customer</mysql.datasource.password>
                 <mysql.datasource.hibernate.dialect>org.hibernate.dialect.MySQL5Dialect
@@ -24,7 +24,7 @@
                 <db.user>customer</db.user>
                 <db.password>customer</db.password>
                 <db.validation-query>SELECT 1</db.validation-query>
-                <db.url>jdbc:mysql://localhost:3306/customer?autoReconnect=true</db.url>
+                <db.url>jdbc:mysql://localhost:3306/customer?autoReconnect=true&amp;useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC</db.url>
                 <db.driver-class-name>com.mysql.jdbc.Driver</db.driver-class-name>
             </properties>
         </profile>

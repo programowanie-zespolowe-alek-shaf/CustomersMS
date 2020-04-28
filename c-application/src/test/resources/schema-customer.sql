@@ -1,7 +1,7 @@
-CREATE SCHEMA IF NOT EXISTS customer;
+DROP ALL OBJECTS;
 
-create user 'customer'@'%' identified by 'customer';
-grant all on customer.* to 'customer'@'%';
+DROP SCHEMA IF EXISTS customer;
+CREATE SCHEMA IF NOT EXISTS customer;
 
 USE customer;
 
@@ -23,6 +23,5 @@ CREATE TABLE user_roles (
   role         VARCHAR(45) NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY uni_username_role (role, username),
-  KEY fk_username_idx (username),
   CONSTRAINT fk_username FOREIGN KEY (username) REFERENCES user (username)
 );

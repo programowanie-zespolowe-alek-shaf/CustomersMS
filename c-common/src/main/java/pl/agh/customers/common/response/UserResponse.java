@@ -8,6 +8,7 @@ import pl.agh.customers.mysql.entity.User;
 import pl.agh.customers.mysql.entity.UserRoles;
 import pl.agh.customers.mysql.enums.RoleEnum;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,9 +34,10 @@ public class UserResponse {
         this.phone = user.getPhone();
         this.address = user.getAddress();
         this.enabled = user.getEnabled();
-        this.roles = user.getRoles().stream()
-                .map(UserRoles::getRoleEnum)
-                .map(RoleEnum::name)
-                .collect(Collectors.toSet());
+        this.roles = user.getRoles() == null ? new HashSet<>() :
+                user.getRoles().stream()
+                        .map(UserRoles::getRoleEnum)
+                        .map(RoleEnum::name)
+                        .collect(Collectors.toSet());
     }
 }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pl.agh.customers.application.dto.UserPostRequestDTO;
 import pl.agh.customers.application.dto.UserPutRequestDTO;
 import pl.agh.customers.application.service.UserService;
 import pl.agh.customers.application.service.ValidationService;
@@ -33,9 +34,9 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = {APPLICATION_JSON})
-    public ResponseEntity<UserResponse> createUser(@RequestBody User user) throws CustomException {
-        validationService.validate(user);
-        UserResponse createdUser = userService.create(user);
+    public ResponseEntity<UserResponse> createUser(@RequestBody UserPostRequestDTO userDTO) throws CustomException {
+        validationService.validate(userDTO);
+        UserResponse createdUser = userService.create(userDTO);
         if (createdUser == null) {
             return ResponseEntity.notFound().build();
         } else {
