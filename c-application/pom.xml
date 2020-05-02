@@ -11,41 +11,21 @@
 
     <artifactId>c-application</artifactId>
     <profiles>
-        <profile>
-            <id>localhost</id>
-            <properties>
-                <profile.name>localhost</profile.name>
-                <mysql.datasource.url>jdbc:mysql://localhost:3306/customer?autoReconnect=true&amp;useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC</mysql.datasource.url>
-                <mysql.datasource.username>customer</mysql.datasource.username>
-                <mysql.datasource.password>customer</mysql.datasource.password>
-                <mysql.datasource.hibernate.dialect>org.hibernate.dialect.MySQL5Dialect
-                </mysql.datasource.hibernate.dialect>
-                <db.connection-properties/>
-                <db.user>customer</db.user>
-                <db.password>customer</db.password>
-                <db.validation-query>SELECT 1</db.validation-query>
-                <db.url>jdbc:mysql://localhost:3306/customer?autoReconnect=true&amp;useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC</db.url>
-                <db.driver-class-name>com.mysql.jdbc.Driver</db.driver-class-name>
-                <eureka.datasource.url>http://localhost:8761/eureka/</eureka.datasource.url>
-            </properties>
-        </profile>
-        <profile>
-            <id>prod</id>
-            <properties>
-                <profile.name>prod</profile.name>
-                <mysql.datasource.url>jdbc:mysql://customer-database:3306/customer?autoReconnect=true&amp;useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC</mysql.datasource.url>
-                <mysql.datasource.username>customer</mysql.datasource.username>
-                <mysql.datasource.password>customer</mysql.datasource.password>
-                <mysql.datasource.hibernate.dialect>org.hibernate.dialect.MySQL5Dialect
-                </mysql.datasource.hibernate.dialect>
-                <db.connection-properties/>
-                <db.user>customer</db.user>
-                <db.password>customer</db.password>
-                <db.validation-query>SELECT 1</db.validation-query>
-                <db.url>jdbc:mysql://customer-database:3306/customer?autoReconnect=true&amp;useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC</db.url>
-                <eureka.datasource.url>http://eureka-service:8761/eureka</eureka.datasource.url>
-            </properties>
-        </profile>
+            <profile>
+                <id>localhost</id>
+                <properties>
+                    <activatedProperties>localhost</activatedProperties>
+                </properties>
+                <activation>
+                    <activeByDefault>true</activeByDefault>
+                </activation>
+            </profile>
+            <profile>
+                <id>prod</id>
+                <properties>
+                    <activatedProperties>prod</activatedProperties>
+                </properties>
+            </profile>
     </profiles>
 
 
