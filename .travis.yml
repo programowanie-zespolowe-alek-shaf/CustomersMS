@@ -1,0 +1,50 @@
+# Secrets in travis required:
+## DOCKER_HUB_USERNAME
+## DOCKER_HUB_PASSWORD
+## GCLOUD_CREDS as base64
+# all other __FIELDS__ in k8s deployment file
+
+env:
+  global:
+    - REPO_NAME="customers"
+    - CLUSTER="cluster-1"
+    - CLUSTER_ZONE="us-central1-c"
+
+language: java
+
+jdk:
+  - openjdk11
+
+services:
+  - docker
+
+script:
+  ## CI
+  # Run UTs
+  - mvn test -B || travis_terminate 1
+  # Trigger CD if not PR and master branch otherwise finish
+  - '[ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "master" ] || travis_terminate 0'
+  # Substitute missing fields in YAML file
+  - python3 replace-tokens.py svc-and-deployment.yaml || travis_terminate 1
+  # Build Docker image
+  - docker build -t "$DOCKER_HUB_USERNAME/$REPO_NAME:$TRAVIS_COMMIT" . || travis_terminate 1
+  - docker tag "$DOCKER_HUB_USERNAME/$REPO_NAME:$TRAVIS_COMMIT" "$DOCKER_HUB_USERNAME/$REPO_NAME:latest" || travis_terminate 1
+  # # Authenticate in Docker Hub
+  - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin || travis_terminate 1
+  # # Push image to Docker Hub
+  - docker push "$DOCKER_HUB_USERNAME/$REPO_NAME:$TRAVIS_COMMIT" || travis_terminate 1
+  - docker push "$DOCKER_HUB_USERNAME/$REPO_NAME:latest" || travis_terminate 1
+  ## CD
+  # Install kubectl
+  - curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl || travis_terminate 1
+  - chmod +x ./kubectl || travis_terminate 1
+  # Authenticate gcloud with service token
+  - gcloud auth activate-service-account --key-file <(echo $GCLOUD_CREDS | base64 -d) || travis_terminate 1
+  # Authenticate kubectl
+  - gcloud container clusters get-credentials $CLUSTER --zone $CLUSTER_ZONE --project $(echo $GCLOUD_CREDS | base64 -d | jq -r .project_id) || travis_terminate 1
+
+  # Deploy service and k8s deployment
+  - ./kubectl apply -f svc-and-deployment.yaml || travis_terminate 1
+  # Wait till completion; report error in case of timeout
+  # ASSUMPTION! deployment.name field in YAML file must match "$REPO_NAME"
+  - ./kubectl rollout status deployment "$REPO_NAME" --timeout=120s || travis_terminate 1
