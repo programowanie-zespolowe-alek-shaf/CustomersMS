@@ -1,0 +1,50 @@
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: __REPO_NAME__
+spec:
+  selector:
+    matchLabels:
+      app: __REPO_NAME__
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: __REPO_NAME__
+    spec:
+      containers:
+        - name: __REPO_NAME__
+          image: __DOCKER_HUB_USERNAME__/__REPO_NAME__:__TRAVIS_COMMIT__
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MYSQL_DB_HOST
+              value: "__MYSQL_DB_HOST__"
+            - name: MYSQL_DB_PORT
+              value: "__MYSQL_DB_PORT__"
+            - name: MYSQL_DATABASE
+              value: "__MYSQL_DATABASE__"
+            - name: MYSQL_DB_USERNAME
+              value: "__MYSQL_DB_USERNAME__"
+            - name: MYSQL_DB_PASSWORD
+              value: "__MYSQL_DB_PASSWORD__"
+#            - name: EUREKA_HOST
+#              value: ...
+#            - name: EUREKA_PORT
+#              value: ...
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: __REPO_NAME__
+spec:
+  type: NodePort
+  selector:
+    app: __REPO_NAME__
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
