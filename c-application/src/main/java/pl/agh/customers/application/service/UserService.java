@@ -17,6 +17,7 @@ import pl.agh.customers.mysql.repository.UserRepository;
 import pl.agh.customers.mysql.repository.UserRolesRepository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -54,6 +55,7 @@ public class UserService {
 
     public ListResponse findUsers(int limit, int offset) {
         List<User> userList = userRepository.findAll();
+        Collections.sort(userList);
         int count = userList.size();
         userList = ListUtil.clampedSublist(userList, limit, offset);
         List<UserResponse> userResponseList = mapUserListToUserResponseList(userList);

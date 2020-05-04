@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,6 +32,7 @@ public class AddUserRoleAssociationControllerTest {
     private UserRolesRepository userRolesRepository;
 
     @Test
+    @WithMockUser(value = "user997")
     public void successTest() throws Exception {
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post("/users/user999/roles/ROLE_ADmin"))
                 .andExpect(status().is(200))
@@ -49,6 +51,7 @@ public class AddUserRoleAssociationControllerTest {
     }
 
     @Test
+    @WithMockUser(value = "user997")
     public void associationAlreadyExistsFailedTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post("/users/user997/roles/rOLE_admiN"))
                 .andExpect(status().is(400))
@@ -56,6 +59,7 @@ public class AddUserRoleAssociationControllerTest {
     }
 
     @Test
+    @WithMockUser(value = "user997")
     public void userDoesNotExistFailedTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post("/users/someUser/roles/ROLE_ADMIN"))
                 .andExpect(status().is(404))
@@ -63,6 +67,7 @@ public class AddUserRoleAssociationControllerTest {
     }
 
     @Test
+    @WithMockUser(value = "user997")
     public void roleEnumDoesNotExistFailedTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post("/users/user997/roles/ROLE_super_admin"))
                 .andExpect(status().is(404))

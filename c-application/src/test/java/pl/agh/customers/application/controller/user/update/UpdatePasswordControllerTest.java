@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,6 +31,7 @@ public class UpdatePasswordControllerTest {
     private UserRepository userRepository;
 
     @Test
+    @WithMockUser(value = "user997")
     public void successTest() throws Exception {
         User userBefore = userRepository.findById("user999").orElseThrow(null);
 
@@ -46,6 +48,7 @@ public class UpdatePasswordControllerTest {
     }
 
     @Test
+    @WithMockUser(value = "user997")
     public void userWithSpecifiedIdDoesNotExistFailedTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.patch("/users/10")
                 .param("newPassword", "newUrl"))
@@ -53,6 +56,7 @@ public class UpdatePasswordControllerTest {
     }
 
     @Test
+    @WithMockUser(value = "user997")
     public void newPasswordIsNotSpecifiedFailedTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.patch("/users/user999"))
                 .andExpect(status().is(400))

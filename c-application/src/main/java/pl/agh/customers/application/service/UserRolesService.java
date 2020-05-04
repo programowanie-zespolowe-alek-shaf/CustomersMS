@@ -48,6 +48,6 @@ public class UserRolesService {
                 userRolesRepository.findByUserAndRoleEnum(user, roleEnum).orElseThrow(() -> new NotFoundException(
                         "User role association does not exist"));
 
-        userRolesRepository.delete(userRoles);
+        userRolesRepository.deleteById(userRoles.getId());
     }
 }

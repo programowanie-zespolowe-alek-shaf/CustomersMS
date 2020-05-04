@@ -10,7 +10,7 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "user", schema = "customer")
-public class User {
+public class User implements Comparable<User> {
 
     @Id
     @Column(name = "username")
@@ -40,4 +40,9 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL)
     private Set<UserRoles> roles;
+
+    @Override
+    public int compareTo(User o) {
+        return this.username.compareTo(o.getUsername());
+    }
 }

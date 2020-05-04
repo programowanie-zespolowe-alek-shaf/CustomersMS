@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,6 +24,7 @@ public class GetUserListControllerTest {
     private MockMvc mvc;
 
     @Test
+    @WithMockUser(value = "user997")
     public void noLimitAndOffsetTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/users"))
                 .andExpect(status().is(400))
@@ -30,6 +32,7 @@ public class GetUserListControllerTest {
     }
 
     @Test
+    @WithMockUser(value = "user997")
     public void noOffsetTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/users")
                 .param("limit", "0"))
@@ -38,6 +41,7 @@ public class GetUserListControllerTest {
     }
 
     @Test
+    @WithMockUser(value = "user997")
     public void onlyLimitAndOffsetTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/users")
                 .param("offset", "0")
@@ -61,6 +65,7 @@ public class GetUserListControllerTest {
     }
 
     @Test
+    @WithMockUser(value = "user997")
     public void offset1Test() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/users")
                 .param("offset", "1")
@@ -72,6 +77,7 @@ public class GetUserListControllerTest {
     }
 
     @Test
+    @WithMockUser(value = "user997")
     public void limitBelowZeroTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/users")
                 .param("offset", "0")
@@ -81,6 +87,7 @@ public class GetUserListControllerTest {
     }
 
     @Test
+    @WithMockUser(value = "user997")
     public void offsetBelowZeroTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/users")
                 .param("offset", "-10")
