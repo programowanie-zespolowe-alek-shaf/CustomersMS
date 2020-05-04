@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,6 +38,7 @@ public class UpdateUserControllerTest {
     private UserRepository userRepository;
 
     @Test
+    @WithMockUser(value = "user997")
     public void successUpdateUserTest() throws Exception {
         User userBefore = userRepository.findById("user997").orElseThrow(null);
 
@@ -80,6 +82,7 @@ public class UpdateUserControllerTest {
     }
 
     @Test
+    @WithMockUser(value = "user997")
     public void noLastNameFailedTest() throws Exception {
         UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
                 .firstName("A")
@@ -98,6 +101,7 @@ public class UpdateUserControllerTest {
     }
 
     @Test
+    @WithMockUser(value = "user997")
     public void noPhoneFailedTest() throws Exception {
         UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
                 .firstName("A")
@@ -116,6 +120,7 @@ public class UpdateUserControllerTest {
     }
 
     @Test
+    @WithMockUser(value = "user997")
     public void invalidEmailFormatFailedTest() throws Exception {
         UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
                 .firstName("A")
@@ -135,6 +140,7 @@ public class UpdateUserControllerTest {
     }
 
     @Test
+    @WithMockUser(value = "user997")
     public void invalidPhoneFormatFailedTest() throws Exception {
         UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
                 .firstName("A")
@@ -154,6 +160,7 @@ public class UpdateUserControllerTest {
     }
 
     @Test
+    @WithMockUser(value = "user997")
     public void userWithSpecifiedIdDoesNotExistTest() throws Exception {
         UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
                 .firstName("A")

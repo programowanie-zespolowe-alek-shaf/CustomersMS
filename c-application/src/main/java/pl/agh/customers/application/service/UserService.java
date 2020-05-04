@@ -1,6 +1,7 @@
 package pl.agh.customers.application.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.agh.customers.application.dto.UserPostRequestDTO;
@@ -15,7 +16,12 @@ import pl.agh.customers.mysql.enums.RoleEnum;
 import pl.agh.customers.mysql.repository.UserRepository;
 import pl.agh.customers.mysql.repository.UserRolesRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -49,6 +55,7 @@ public class UserService {
 
     public ListResponse findUsers(int limit, int offset) {
         List<User> userList = userRepository.findAll();
+        Collections.sort(userList);
         int count = userList.size();
         userList = ListUtil.clampedSublist(userList, limit, offset);
         List<UserResponse> userResponseList = mapUserListToUserResponseList(userList);
@@ -89,7 +96,7 @@ public class UserService {
 
     public User delete(String username) {
         Optional<User> user = userRepository.findById(username);
-        if (!user.isPresent()) {
+        if (user.isEmpty()) {
             return null;
         }
         userRepository.delete(user.get());
@@ -102,5 +109,11 @@ public class UserService {
             userResponseList.add(new UserResponse(u));
         }
         return userResponseList;
+    }
+
+    public User getUser(String username) {
+        return userRepository.findById(username).orElseThrow(
+                () -> new UsernameNotFoundException(String.format("Username '%s' not found", username)));
+
     }
 }

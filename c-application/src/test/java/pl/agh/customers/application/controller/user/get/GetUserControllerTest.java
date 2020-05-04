@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,6 +24,7 @@ public class GetUserControllerTest {
     private MockMvc mvc;
 
     @Test
+    @WithMockUser(value = "user997")
     public void successTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/users/user997"))
                 .andExpect(status().is(200))
@@ -39,6 +41,7 @@ public class GetUserControllerTest {
     }
 
     @Test
+    @WithMockUser(value = "user997")
     public void notFoundTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/users/10"))
                 .andExpect(status().is(404));
