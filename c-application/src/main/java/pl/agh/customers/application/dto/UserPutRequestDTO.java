@@ -16,4 +16,5 @@ public class UserPutRequestDTO {
     private String phone;
     private String address;
     private Boolean enabled;
+    private Long lastShoppingCardId;
 }

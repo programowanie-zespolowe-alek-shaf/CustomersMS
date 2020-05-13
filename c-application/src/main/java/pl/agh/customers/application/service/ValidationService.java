@@ -6,7 +6,6 @@ import pl.agh.customers.application.dto.UserPutRequestDTO;
 import pl.agh.customers.common.exception.BadRequestException;
 import pl.agh.customers.common.util.FieldName;
 import pl.agh.customers.common.util.ValidationUtil;
-import pl.agh.customers.mysql.entity.User;
 
 @Service
 public class ValidationService {
@@ -21,6 +20,7 @@ public class ValidationService {
         ValidationUtil.validatePhoneFormat(user.getPhone());
         ValidationUtil.validateNotNull(FieldName.ADDRESS, user.getAddress());
         ValidationUtil.validateNotNull(FieldName.ENABLED, user.getEnabled());
+        ValidationUtil.validateGreaterThanZeroOrNull(FieldName.LAST_SHOPPING_CARD_ID, user.getLastShoppingCardId());
     }
 
     public void validate(int limit, int offset) throws BadRequestException {
@@ -37,5 +37,6 @@ public class ValidationService {
         ValidationUtil.validatePhoneFormat(userDTO.getPhone());
         ValidationUtil.validateNotNull(FieldName.ADDRESS, userDTO.getAddress());
         ValidationUtil.validateNotNull(FieldName.ENABLED, userDTO.getEnabled());
+        ValidationUtil.validateGreaterThanZeroOrNull(FieldName.LAST_SHOPPING_CARD_ID, userDTO.getLastShoppingCardId());
     }
 }

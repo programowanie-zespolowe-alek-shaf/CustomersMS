@@ -1,6 +1,8 @@
 package pl.agh.customers.mysql.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -36,6 +38,9 @@ public class User implements Comparable<User> {
 
     @Column(name = "enabled")
     private Boolean enabled;
+
+    @Column(name = "last_shopping_card_id")
+    private Long lastShoppingCardId;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL)

@@ -36,6 +36,7 @@ public class GetUserControllerTest {
                 .andExpect(jsonPath("phone").value("+48500600700"))
                 .andExpect(jsonPath("address").value("123 Elf Road, North Pole, 8888"))
                 .andExpect(jsonPath("enabled").value(true))
+                .andExpect(jsonPath("lastShoppingCardId").value(123L))
                 .andExpect(jsonPath("roles[0]").value("ROLE_USER"))
                 .andExpect(jsonPath("roles[1]").value("ROLE_ADMIN"));
     }

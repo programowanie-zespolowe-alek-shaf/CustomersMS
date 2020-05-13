@@ -11,6 +11,7 @@ public enum FieldName {
     ADDRESS("address"),
     ENABLED("enabled"),
     LIMIT("limit"),
+    LAST_SHOPPING_CARD_ID("lastShoppingCardId"),
     OFFSET("offset");
 
     private final String name;

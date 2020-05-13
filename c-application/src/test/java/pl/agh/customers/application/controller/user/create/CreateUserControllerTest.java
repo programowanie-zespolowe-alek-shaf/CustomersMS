@@ -67,7 +67,8 @@ public class CreateUserControllerTest {
                 .andExpect(jsonPath("phone").value("4533453"))
                 .andExpect(jsonPath("address").value("ggd, gfd"))
                 .andExpect(jsonPath("enabled").value(false))
-                .andExpect(jsonPath("roles[0]").value("ROLE_USER"));
+                .andExpect(jsonPath("roles[0]").value("ROLE_USER"))
+                .andExpect(jsonPath("lastShoppingCardId").isEmpty());
 
         User user = userRepository.findById("newUser").orElse(null);
         assertNotNull(user);
@@ -189,5 +190,27 @@ public class CreateUserControllerTest {
                 .content(requestJson))
                 .andExpect(status().is(400))
                 .andExpect(jsonPath("error").value("Username is used"));
+    }
+
+    @Test
+    public void invalidLastShoppingCardID() throws Exception {
+        UserPostRequestDTO userRequestDTO = UserPostRequestDTO.builder()
+                .username("user997123")
+                .password("pass")
+                .firstName("A")
+                .lastName("B")
+                .email("2@c.com")
+                .phone("4533453")
+                .address("ggd, gfd")
+                .enabled(false)
+                .lastShoppingCardId(-2L)
+                .build();
+
+        String requestJson = mapObjectToStringJson(userRequestDTO);
+
+        mvc.perform(MockMvcRequestBuilders.post("/users").contentType(APPLICATION_JSON_UTF8)
+                .content(requestJson))
+                .andExpect(status().is(400))
+                .andExpect(jsonPath("error").value("lastShoppingCardId must be greater than zero"));
     }
 }
