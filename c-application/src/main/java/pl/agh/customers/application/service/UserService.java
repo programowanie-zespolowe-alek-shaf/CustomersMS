@@ -16,12 +16,7 @@ import pl.agh.customers.mysql.enums.RoleEnum;
 import pl.agh.customers.mysql.repository.UserRepository;
 import pl.agh.customers.mysql.repository.UserRolesRepository;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -77,7 +72,7 @@ public class UserService {
             user.setPhone(userDTO.getPhone());
             user.setAddress(userDTO.getAddress());
             user.setEnabled(userDTO.getEnabled());
-
+            user.setLastShoppingCardId(userDTO.getLastShoppingCardId());
             user = userRepository.save(user);
             return new UserResponse(user);
         }

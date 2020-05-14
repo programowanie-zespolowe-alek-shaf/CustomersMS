@@ -57,8 +57,10 @@ public class GetUserListControllerTest {
                 .andExpect(jsonPath("list[0].enabled").value(true))
                 .andExpect(jsonPath("list[0].roles[0]").value("ROLE_USER"))
                 .andExpect(jsonPath("list[0].roles[1]").value("ROLE_ADMIN"))
+                .andExpect(jsonPath("list[0].lastShoppingCardId").value(123L))
                 .andExpect(jsonPath("list[1].username").value("user999"))
                 .andExpect(jsonPath("list[1].password").doesNotExist())
+                .andExpect(jsonPath("list[1].lastShoppingCardId").value(987L))
                 .andExpect(jsonPath("list[1].roles[0]").value("ROLE_USER"))
                 .andExpect(jsonPath("list[1].roles[1]").doesNotExist())
                 .andExpect(jsonPath("count").value("2"));

@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -49,6 +48,7 @@ public class UpdateUserControllerTest {
                 .phone("4533453")
                 .address("ggd, gfd")
                 .enabled(false)
+                .lastShoppingCardId(345L)
                 .build();
 
         String requestJson = mapObjectToStringJson(userRequestDTO);
@@ -64,6 +64,7 @@ public class UpdateUserControllerTest {
                 .andExpect(jsonPath("phone").value("4533453"))
                 .andExpect(jsonPath("address").value("ggd, gfd"))
                 .andExpect(jsonPath("enabled").value(false))
+                .andExpect(jsonPath("lastShoppingCardId").value(345L))
                 .andExpect(jsonPath("roles[0]").value("ROLE_USER"))
                 .andExpect(jsonPath("roles[1]").value("ROLE_ADMIN"));
 
@@ -177,4 +178,26 @@ public class UpdateUserControllerTest {
                 .content(requestJson))
                 .andExpect(status().is(404));
     }
+
+    @Test
+    @WithMockUser(value = "user997")
+    public void invalidLastShoppingCardID() throws Exception {
+        UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
+                .firstName("A")
+                .lastName("B")
+                .email("2@dc.com")
+                .phone("4533453")
+                .address("ggd, gfd")
+                .enabled(false)
+                .lastShoppingCardId(-2L)
+                .build();
+
+        String requestJson = mapObjectToStringJson(userRequestDTO);
+
+        mvc.perform(MockMvcRequestBuilders.put("/users/user997").contentType(APPLICATION_JSON_UTF8)
+                .content(requestJson))
+                .andExpect(status().is(400))
+                .andExpect(jsonPath("error").value("lastShoppingCardId must be greater than zero"));
+    }
+
 }

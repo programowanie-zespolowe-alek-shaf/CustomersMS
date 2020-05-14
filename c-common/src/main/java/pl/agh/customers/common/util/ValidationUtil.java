@@ -29,6 +29,12 @@ public class ValidationUtil {
         }
     }
 
+    public static void validateGreaterThanZeroOrNull(FieldName fieldName, Number number) throws BadRequestException {
+        if (number != null && number.doubleValue() <= 0) {
+            throw new BadRequestException(fieldName.getName() + " must be greater than zero");
+        }
+    }
+
     public static void validateGreaterOrEqualsZero(FieldName fieldName, Number number) throws BadRequestException {
         if (number == null || number.doubleValue() < 0) {
             throw new BadRequestException(fieldName.getName() + " must be greater or equals zero");

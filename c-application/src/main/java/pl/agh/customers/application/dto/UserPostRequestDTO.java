@@ -21,8 +21,9 @@ public class UserPostRequestDTO {
     private String phone;
     private String address;
     private Boolean enabled;
+    private Long lastShoppingCardId;
 
     public User toEntity() {
-        return new User(username, password, firstName, lastName, email, phone, address, enabled, new HashSet<>());
+        return new User(username, password, firstName, lastName, email, phone, address, enabled, lastShoppingCardId, new HashSet<>());
     }
 }
