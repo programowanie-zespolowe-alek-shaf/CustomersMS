@@ -2,6 +2,7 @@ package pl.agh.customers.application.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,6 +14,7 @@ import pl.agh.customers.common.response.UserRolesResponse;
 import static pl.agh.customers.common.util.ResponseFormat.APPLICATION_JSON;
 
 @RestController
+@Secured("ROLE_ADMIN")
 public class UserRolesController {
 
 
