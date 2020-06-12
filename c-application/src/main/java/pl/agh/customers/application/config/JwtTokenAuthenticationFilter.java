@@ -1,6 +1,5 @@
 package pl.agh.customers.application.config;
 
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
