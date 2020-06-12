@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import pl.agh.customers.application.config.WithCustomUser;
 import pl.agh.customers.application.dto.UserPutRequestDTO;
 import pl.agh.customers.mysql.entity.User;
 import pl.agh.customers.mysql.repository.UserRepository;
@@ -83,7 +84,7 @@ public class UpdateUserControllerTest {
     }
 
     @Test
-    @WithMockUser("user997")
+    @WithCustomUser("user997")
     public void loggedInSuccessUpdateUserTest() throws Exception {
         User userBefore = userRepository.findById("user997").orElseThrow(null);
 
@@ -129,10 +130,8 @@ public class UpdateUserControllerTest {
     }
 
     @Test
-    @WithMockUser("anotherUser")
-    public void otherSuccessUpdateUserTest() throws Exception {
-        User userBefore = userRepository.findById("user997").orElseThrow(null);
-
+    @WithCustomUser("user999")
+    public void otherUnsuccessfulUpdateUserTest() throws Exception {
         UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
                 .firstName("A")
                 .lastName("B")
@@ -171,7 +170,7 @@ public class UpdateUserControllerTest {
     }
 
     @Test
-    @WithMockUser("user997")
+    @WithCustomUser("user997")
     public void loggedInNoLastNameFailedTest() throws Exception {
         UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
                 .firstName("A")
@@ -190,7 +189,7 @@ public class UpdateUserControllerTest {
     }
 
     @Test
-    @WithMockUser("anotherUser")
+    @WithCustomUser("user999")
     public void otherNoLastNameFailedTest() throws Exception {
         UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
                 .firstName("A")
@@ -228,7 +227,7 @@ public class UpdateUserControllerTest {
     }
 
     @Test
-    @WithMockUser("user997")
+    @WithCustomUser("user997")
     public void loggedInNoPhoneFailedTest() throws Exception {
         UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
                 .firstName("A")
@@ -247,7 +246,7 @@ public class UpdateUserControllerTest {
     }
 
     @Test
-    @WithMockUser("anotherUser")
+    @WithCustomUser("user999")
     public void otherNoPhoneFailedTest() throws Exception {
         UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
                 .firstName("A")
@@ -285,7 +284,7 @@ public class UpdateUserControllerTest {
     }
 
     @Test
-    @WithMockUser("user997")
+    @WithCustomUser("user997")
     public void loggedInInvalidEmailFormatFailedTest() throws Exception {
         UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
                 .firstName("A")
@@ -305,7 +304,7 @@ public class UpdateUserControllerTest {
     }
 
     @Test
-    @WithMockUser("anotherUser")
+    @WithCustomUser("user999")
     public void otherInvalidEmailFormatFailedTest() throws Exception {
         UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
                 .firstName("A")
@@ -345,7 +344,7 @@ public class UpdateUserControllerTest {
     }
 
     @Test
-    @WithMockUser("user997")
+    @WithCustomUser("user997")
     public void loggedInInvalidPhoneFormatFailedTest() throws Exception {
         UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
                 .firstName("A")
@@ -365,7 +364,7 @@ public class UpdateUserControllerTest {
     }
 
     @Test
-    @WithMockUser("anotherUser")
+    @WithCustomUser("user999")
     public void otherInvalidPhoneFormatFailedTest() throws Exception {
         UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
                 .firstName("A")
@@ -403,44 +402,6 @@ public class UpdateUserControllerTest {
     }
 
     @Test
-    @WithMockUser("10")
-    public void loggedInUserWithSpecifiedIdDoesNotExistTest() throws Exception {
-        UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
-                .firstName("A")
-                .lastName("B")
-                .email("2@c.com")
-                .phone("4533453")
-                .address("ggd, gfd")
-                .enabled(false)
-                .build();
-
-        String requestJson = mapObjectToStringJson(userRequestDTO);
-
-        mvc.perform(MockMvcRequestBuilders.put("/users/10").contentType(APPLICATION_JSON_UTF8)
-                .content(requestJson))
-                .andExpect(status().is(404));
-    }
-
-    @Test
-    @WithMockUser("anotherUser")
-    public void otherUserWithSpecifiedIdDoesNotExistTest() throws Exception {
-        UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
-                .firstName("A")
-                .lastName("B")
-                .email("2@c.com")
-                .phone("4533453")
-                .address("ggd, gfd")
-                .enabled(false)
-                .build();
-
-        String requestJson = mapObjectToStringJson(userRequestDTO);
-
-        mvc.perform(MockMvcRequestBuilders.put("/users/10").contentType(APPLICATION_JSON_UTF8)
-                .content(requestJson))
-                .andExpect(status().is(403));
-    }
-
-    @Test
     @WithMockUser(roles = "ADMIN")
     public void adminInvalidLastShoppingCardID() throws Exception {
         UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
@@ -462,7 +423,7 @@ public class UpdateUserControllerTest {
     }
 
     @Test
-    @WithMockUser("user997")
+    @WithCustomUser("user997")
     public void loggedInInvalidLastShoppingCardID() throws Exception {
         UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
                 .firstName("A")
@@ -483,7 +444,7 @@ public class UpdateUserControllerTest {
     }
 
     @Test
-    @WithMockUser("anotherUser")
+    @WithCustomUser("user999")
     public void otherInvalidLastShoppingCardID() throws Exception {
         UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
                 .firstName("A")
