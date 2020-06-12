@@ -90,4 +90,18 @@ public class GetUserControllerTest {
         mvc.perform(MockMvcRequestBuilders.get("/users/10"))
                 .andExpect(status().is(404));
     }
+
+    @Test
+    @WithCustomUser("10")
+    public void loggedInNotFoundTest() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/users/10"))
+                .andExpect(status().is(404));
+    }
+
+    @Test
+    @WithCustomUser("anotherUser")
+    public void otherNotFoundTest() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/users/10"))
+                .andExpect(status().is(403));
+    }
 }

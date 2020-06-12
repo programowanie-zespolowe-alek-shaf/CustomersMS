@@ -83,6 +83,22 @@ public class UpdatePasswordControllerTest {
     }
 
     @Test
+    @WithCustomUser("10")
+    public void loggedInUserWithSpecifiedIdDoesNotExistFailedTest() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.patch("/users/10")
+                .param("newPassword", "newUrl"))
+                .andExpect(status().is(404));
+    }
+
+    @Test
+    @WithCustomUser("anotherUser")
+    public void OtherLoggedInUserWithSpecifiedIdDoesNotExistFailedTest() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.patch("/users/10")
+                .param("newPassword", "newUrl"))
+                .andExpect(status().is(403));
+    }
+
+    @Test
     @WithMockUser(roles = "ADMIN")
     public void adminNewPasswordIsNotSpecifiedFailedTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.patch("/users/user999"))
@@ -93,6 +109,14 @@ public class UpdatePasswordControllerTest {
     @Test
     @WithCustomUser("user999")
     public void loggedInNewPasswordIsNotSpecifiedFailedTest() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.patch("/users/user999"))
+                .andExpect(status().is(400))
+                .andExpect(status().reason("Required String parameter 'newPassword' is not present"));
+    }
+
+    @Test
+    @WithCustomUser("anotherUser")
+    public void otherNNewPasswordIsNotSpecifiedFailedTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.patch("/users/user999"))
                 .andExpect(status().is(400))
                 .andExpect(status().reason("Required String parameter 'newPassword' is not present"));

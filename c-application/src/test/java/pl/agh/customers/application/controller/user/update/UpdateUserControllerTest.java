@@ -402,6 +402,44 @@ public class UpdateUserControllerTest {
     }
 
     @Test
+    @WithCustomUser("10")
+    public void loggedInUserWithSpecifiedIdDoesNotExistTest() throws Exception {
+        UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
+                .firstName("A")
+                .lastName("B")
+                .email("2@c.com")
+                .phone("4533453")
+                .address("ggd, gfd")
+                .enabled(false)
+                .build();
+
+        String requestJson = mapObjectToStringJson(userRequestDTO);
+
+        mvc.perform(MockMvcRequestBuilders.put("/users/10").contentType(APPLICATION_JSON_UTF8)
+                .content(requestJson))
+                .andExpect(status().is(404));
+    }
+
+    @Test
+    @WithCustomUser("anotherUser")
+    public void otherUserWithSpecifiedIdDoesNotExistTest() throws Exception {
+        UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
+                .firstName("A")
+                .lastName("B")
+                .email("2@c.com")
+                .phone("4533453")
+                .address("ggd, gfd")
+                .enabled(false)
+                .build();
+
+        String requestJson = mapObjectToStringJson(userRequestDTO);
+
+        mvc.perform(MockMvcRequestBuilders.put("/users/10").contentType(APPLICATION_JSON_UTF8)
+                .content(requestJson))
+                .andExpect(status().is(403));
+    }
+
+    @Test
     @WithMockUser(roles = "ADMIN")
     public void adminInvalidLastShoppingCardID() throws Exception {
         UserPutRequestDTO userRequestDTO = UserPutRequestDTO.builder()
