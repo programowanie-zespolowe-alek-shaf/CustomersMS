@@ -1,6 +1,6 @@
 package pl.agh.customers.application.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +21,7 @@ import static pl.agh.customers.common.util.ResponseFormat.APPLICATION_JSON;
 
 @RestController
 @RequestMapping(value = UserController.PREFIX)
+@RequiredArgsConstructor
 public class UserController {
 
     static final String PREFIX = "/users";
@@ -28,12 +29,6 @@ public class UserController {
     private final UserService userService;
 
     private final ValidationService validationService;
-
-    @Autowired
-    public UserController(UserService userService, ValidationService validationService) {
-        this.userService = userService;
-        this.validationService = validationService;
-    }
 
     @RequestMapping(method = RequestMethod.POST, produces = {APPLICATION_JSON})
     public ResponseEntity<UserResponse> createUser(@RequestBody UserPostRequestDTO userDTO) throws CustomException {
@@ -61,8 +56,7 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-
-    @PreAuthorize("#username == authentication.principal.username or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("#username == principal or hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = {APPLICATION_JSON})
     public ResponseEntity<UserResponse> getUser(@PathVariable("username") String username) {
         UserResponse user = userService.find(username);
@@ -73,7 +67,7 @@ public class UserController {
         }
     }
 
-    @PreAuthorize("#username == authentication.principal.username or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("#username == principal or hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "{username}", method = RequestMethod.PUT, produces = {APPLICATION_JSON})
     public ResponseEntity<UserResponse> updateUser(@PathVariable("username") String username,
                                                    @RequestBody UserPutRequestDTO userDTO) throws CustomException {
@@ -86,7 +80,7 @@ public class UserController {
         }
     }
 
-    @PreAuthorize("#username == authentication.principal.username or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("#username == principal or hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "{username}", method = RequestMethod.PATCH, produces = {APPLICATION_JSON})
     public ResponseEntity<Object> updateUserPassword(@PathVariable("username") String username,
                                                      @RequestParam String newPassword) {
