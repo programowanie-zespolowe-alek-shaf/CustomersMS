@@ -29,6 +29,7 @@ import static pl.agh.customers.application.config.TestUtils.mapObjectToStringJso
 @SpringBootTest()
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@WithMockUser(roles = {"ADMIN"})
 public class DeleteUserControllerTest {
 
     private static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(),
@@ -41,7 +42,6 @@ public class DeleteUserControllerTest {
     private UserRolesRepository userRolesRepository;
 
     @Test
-    @WithMockUser(value = "user997")
     public void createAndDeleteSuccessTest() throws Exception {
         UserPostRequestDTO userDTO = UserPostRequestDTO.builder()
                 .username("userToDelete")
@@ -77,7 +77,6 @@ public class DeleteUserControllerTest {
     }
 
     @Test
-    @WithMockUser(value = "user997")
     public void notFoundTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.delete("/users/userDoesNotExist"))
                 .andExpect(status().is(404));

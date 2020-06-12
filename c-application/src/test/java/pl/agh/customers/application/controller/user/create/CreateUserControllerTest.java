@@ -213,4 +213,4 @@ public class CreateUserControllerTest {
                 .andExpect(status().is(400))
                 .andExpect(jsonPath("error").value("lastShoppingCardId must be greater than zero"));
     }
-}
+};

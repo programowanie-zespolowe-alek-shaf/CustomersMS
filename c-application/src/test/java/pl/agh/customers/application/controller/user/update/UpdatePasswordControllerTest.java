@@ -14,7 +14,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.agh.customers.mysql.entity.User;
 import pl.agh.customers.mysql.repository.UserRepository;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,8 +32,8 @@ public class UpdatePasswordControllerTest {
     private UserRepository userRepository;
 
     @Test
-    @WithMockUser(value = "user997")
-    public void successTest() throws Exception {
+    @WithMockUser(roles = "ADMIN")
+    public void adminSuccessTest() throws Exception {
         User userBefore = userRepository.findById("user999").orElseThrow(null);
 
         mvc.perform(MockMvcRequestBuilders.patch("/users/user999")
@@ -48,18 +49,83 @@ public class UpdatePasswordControllerTest {
     }
 
     @Test
-    @WithMockUser(value = "user997")
-    public void userWithSpecifiedIdDoesNotExistFailedTest() throws Exception {
+    @WithMockUser("user999")
+    public void loggedInSuccessTest() throws Exception {
+        User userBefore = userRepository.findById("user999").orElseThrow(null);
+
+        mvc.perform(MockMvcRequestBuilders.patch("/users/user999")
+                .param("newPassword", "newPass"))
+                .andExpect(status().is(204))
+                .andExpect(jsonPath("username").doesNotExist());
+
+        User user = userRepository.findById("user999").orElse(null);
+        assertNotNull(user);
+        assertTrue(new BCryptPasswordEncoder().matches("newPass", user.getPassword()));
+
+        userRepository.save(userBefore);
+    }
+
+    @Test
+    @WithMockUser("anotherUser")
+    public void otherSuccessTest() throws Exception {
+        User userBefore = userRepository.findById("user999").orElseThrow(null);
+
+        mvc.perform(MockMvcRequestBuilders.patch("/users/user999")
+                .param("newPassword", "newPass"))
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void adminUserWithSpecifiedIdDoesNotExistFailedTestAdmin() throws Exception {
         mvc.perform(MockMvcRequestBuilders.patch("/users/10")
                 .param("newPassword", "newUrl"))
                 .andExpect(status().is(404));
     }
 
     @Test
-    @WithMockUser(value = "user997")
-    public void newPasswordIsNotSpecifiedFailedTest() throws Exception {
+    @WithMockUser("10")
+    public void loggedInUserWithSpecifiedIdDoesNotExistFailedTest() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.patch("/users/10")
+                .param("newPassword", "newUrl"))
+                .andExpect(status().is(404));
+    }
+
+    @Test
+    @WithMockUser("anotherUser")
+    public void OtherLoggedInUserWithSpecifiedIdDoesNotExistFailedTest() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.patch("/users/10")
+                .param("newPassword", "newUrl"))
+                .andExpect(status().is(403));
+    }
+
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void adminNewPasswordIsNotSpecifiedFailedTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.patch("/users/user999"))
                 .andExpect(status().is(400))
                 .andExpect(status().reason("Required String parameter 'newPassword' is not present"));
     }
-}
+
+
+    @Test
+    @WithMockUser("user999")
+    public void loggedInNewPasswordIsNotSpecifiedFailedTest() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.patch("/users/user999"))
+                .andExpect(status().is(400))
+                .andExpect(status().reason("Required String parameter 'newPassword' is not present"));
+    }
+
+
+    @Test
+    @WithMockUser("anotherUser")
+    public void otherNNewPasswordIsNotSpecifiedFailedTest() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.patch("/users/user999"))
+                .andExpect(status().is(400))
+                .andExpect(status().reason("Required String parameter 'newPassword' is not present"));
+    }
+
+};
+
+

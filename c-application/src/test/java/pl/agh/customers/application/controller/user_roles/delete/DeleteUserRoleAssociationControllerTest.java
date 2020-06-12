@@ -24,6 +24,7 @@ import static pl.agh.customers.application.config.TestUtils.getIdFromResponse;
 @SpringBootTest()
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@WithMockUser(roles = "ADMIN")
 public class DeleteUserRoleAssociationControllerTest {
 
     @Autowired
@@ -32,7 +33,6 @@ public class DeleteUserRoleAssociationControllerTest {
     private UserRolesRepository userRolesRepository;
 
     @Test
-    @WithMockUser(value = "user997")
     public void successCreateAndDeleteAssociationTest() throws Exception {
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post("/users/user999/roles/ROLE_ADmin"))
                 .andExpect(status().is(200))
@@ -53,7 +53,6 @@ public class DeleteUserRoleAssociationControllerTest {
     }
 
     @Test
-    @WithMockUser(value = "user997")
     public void associationDoesNotExistFailedTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.delete("/users/user999/roles/rOLE_admiN"))
                 .andExpect(status().is(404))
@@ -61,7 +60,6 @@ public class DeleteUserRoleAssociationControllerTest {
     }
 
     @Test
-    @WithMockUser(value = "user997")
     public void userDoesNotExistFailedTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.delete("/users/someUser/roles/ROLE_ADMIN"))
                 .andExpect(status().is(404))
@@ -69,7 +67,6 @@ public class DeleteUserRoleAssociationControllerTest {
     }
 
     @Test
-    @WithMockUser(value = "user997")
     public void roleEnumDoesNotExistFailedTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.delete("/users/user997/roles/ROLE_super_admin"))
                 .andExpect(status().is(404))

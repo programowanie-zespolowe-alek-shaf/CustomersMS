@@ -15,7 +15,8 @@ import pl.agh.customers.mysql.entity.UserRoles;
 import pl.agh.customers.mysql.enums.RoleEnum;
 import pl.agh.customers.mysql.repository.UserRolesRepository;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static pl.agh.customers.application.config.TestUtils.getIdFromResponse;
@@ -24,6 +25,7 @@ import static pl.agh.customers.application.config.TestUtils.getIdFromResponse;
 @SpringBootTest()
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@WithMockUser(roles = "ADMIN")
 public class AddUserRoleAssociationControllerTest {
 
     @Autowired
@@ -32,7 +34,6 @@ public class AddUserRoleAssociationControllerTest {
     private UserRolesRepository userRolesRepository;
 
     @Test
-    @WithMockUser(value = "user997")
     public void successTest() throws Exception {
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post("/users/user999/roles/ROLE_ADmin"))
                 .andExpect(status().is(200))
@@ -51,7 +52,6 @@ public class AddUserRoleAssociationControllerTest {
     }
 
     @Test
-    @WithMockUser(value = "user997")
     public void associationAlreadyExistsFailedTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post("/users/user997/roles/rOLE_admiN"))
                 .andExpect(status().is(400))
@@ -59,7 +59,6 @@ public class AddUserRoleAssociationControllerTest {
     }
 
     @Test
-    @WithMockUser(value = "user997")
     public void userDoesNotExistFailedTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post("/users/someUser/roles/ROLE_ADMIN"))
                 .andExpect(status().is(404))
@@ -67,7 +66,6 @@ public class AddUserRoleAssociationControllerTest {
     }
 
     @Test
-    @WithMockUser(value = "user997")
     public void roleEnumDoesNotExistFailedTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post("/users/user997/roles/ROLE_super_admin"))
                 .andExpect(status().is(404))
