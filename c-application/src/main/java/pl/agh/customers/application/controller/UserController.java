@@ -35,7 +35,6 @@ public class UserController {
         this.validationService = validationService;
     }
 
-    @Secured("ROLE_ADMIN")
     @RequestMapping(method = RequestMethod.POST, produces = {APPLICATION_JSON})
     public ResponseEntity<UserResponse> createUser(@RequestBody UserPostRequestDTO userDTO) throws CustomException {
         validationService.validate(userDTO);
