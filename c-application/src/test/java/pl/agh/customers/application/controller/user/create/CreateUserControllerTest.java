@@ -2,9 +2,11 @@ package pl.agh.customers.application.controller.user.create;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
@@ -12,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.agh.customers.application.dto.UserPostRequestDTO;
+import pl.agh.customers.application.rest.RestClient;
 import pl.agh.customers.mysql.entity.User;
 import pl.agh.customers.mysql.entity.UserRoles;
 import pl.agh.customers.mysql.enums.RoleEnum;
@@ -40,6 +43,8 @@ public class CreateUserControllerTest {
     private UserRepository userRepository;
     @Autowired
     private UserRolesRepository userRolesRepository;
+    @MockBean
+    private RestClient restClient;
 
     @Test
     public void successTest() throws Exception {
@@ -87,6 +92,8 @@ public class CreateUserControllerTest {
 
         userRolesRepository.deleteAll(userRolesList);
         userRepository.delete(user);
+
+        Mockito.verifyNoInteractions(restClient);
     }
 
     @Test

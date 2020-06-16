@@ -30,7 +30,7 @@ public class UserController {
 
     private final ValidationService validationService;
 
-    @RequestMapping(method = RequestMethod.POST, produces = {APPLICATION_JSON})
+    @PostMapping(consumes = APPLICATION_JSON, produces = APPLICATION_JSON)
     public ResponseEntity<UserResponse> createUser(@RequestBody UserPostRequestDTO userDTO) throws CustomException {
         validationService.validate(userDTO);
         UserResponse createdUser = userService.create(userDTO);
@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @Secured("ROLE_ADMIN")
-    @RequestMapping(method = RequestMethod.GET, produces = {APPLICATION_JSON})
+    @GetMapping(produces = APPLICATION_JSON)
     public ResponseEntity<ListResponse> getAllUsers(@RequestParam int limit,
                                                     @RequestParam int offset) throws CustomException {
         validationService.validate(limit, offset);
@@ -57,7 +57,7 @@ public class UserController {
     }
 
     @PreAuthorize("#username == principal or hasRole('ROLE_ADMIN')")
-    @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = {APPLICATION_JSON})
+    @GetMapping(value = "{username}", produces = APPLICATION_JSON)
     public ResponseEntity<UserResponse> getUser(@PathVariable("username") String username) {
         UserResponse user = userService.find(username);
         if (user == null) {
@@ -68,7 +68,7 @@ public class UserController {
     }
 
     @PreAuthorize("#username == principal or hasRole('ROLE_ADMIN')")
-    @RequestMapping(value = "{username}", method = RequestMethod.PUT, produces = {APPLICATION_JSON})
+    @PutMapping(value = "{username}", consumes = APPLICATION_JSON, produces = APPLICATION_JSON)
     public ResponseEntity<UserResponse> updateUser(@PathVariable("username") String username,
                                                    @RequestBody UserPutRequestDTO userDTO) throws CustomException {
         validationService.validate(userDTO);
@@ -81,7 +81,7 @@ public class UserController {
     }
 
     @PreAuthorize("#username == principal or hasRole('ROLE_ADMIN')")
-    @RequestMapping(value = "{username}", method = RequestMethod.PATCH, produces = {APPLICATION_JSON})
+    @PatchMapping(value = "{username}", produces = APPLICATION_JSON)
     public ResponseEntity<Object> updateUserPassword(@PathVariable("username") String username,
                                                      @RequestParam String newPassword) {
         User user = userService.updatePassword(username, newPassword);
@@ -93,7 +93,7 @@ public class UserController {
     }
 
     @Secured("ROLE_ADMIN")
-    @RequestMapping(value = "{username}", method = RequestMethod.DELETE, produces = {APPLICATION_JSON})
+    @DeleteMapping(value = "{username}", produces = APPLICATION_JSON)
     public ResponseEntity<Object> deleteUser(@PathVariable("username") String username) {
         User deletedUser = userService.delete(username);
         if (deletedUser == null) {

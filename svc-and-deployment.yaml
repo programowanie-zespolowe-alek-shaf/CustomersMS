@@ -30,10 +30,16 @@ spec:
               value: "__MYSQL_DB_USERNAME__"
             - name: MYSQL_DB_PASSWORD
               value: "__MYSQL_DB_PASSWORD__"
-#            - name: EUREKA_HOST
-#              value: ...
-#            - name: EUREKA_PORT
-#              value: ...
+            - name: ORDER_MS_URL
+              value: __ORDER_MS_URL__
+            - name: PRODUCT_MS_URL
+              value: __PRODUCT_MS_URL__
+            - name: CUSTOMER_MS_URL
+              value: __CUSTOMER_MS_URL__
+            - name: CART_MS_URL
+              value: __CART_MS_URL__
+            - name: PAYMENT_MS_URL
+              value: __PAYMENT_MS_URL__
 ---
 # Service
 apiVersion: v1
