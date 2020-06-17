@@ -1,10 +1,13 @@
 package pl.agh.customers.application.controller.user.update;
 
+import net.minidev.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -13,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.agh.customers.application.config.WithCustomUser;
 import pl.agh.customers.application.dto.UserPutRequestDTO;
+import pl.agh.customers.application.rest.MicroService;
+import pl.agh.customers.application.rest.RestClient;
 import pl.agh.customers.mysql.entity.User;
 import pl.agh.customers.mysql.repository.UserRepository;
 
@@ -36,6 +41,8 @@ public class UpdateUserControllerTest {
     private MockMvc mvc;
     @Autowired
     private UserRepository userRepository;
+    @MockBean
+    private RestClient restClient;
 
     @Test
     @WithMockUser(roles = "ADMIN")
@@ -79,6 +86,10 @@ public class UpdateUserControllerTest {
         assertEquals("4533453", user.getPhone());
         assertEquals("ggd, gfd", user.getAddress());
         assertFalse(user.getEnabled());
+
+        JSONObject request = new JSONObject();
+        request.put("username", "user997");
+        Mockito.verify(restClient).put(MicroService.CART_MS, "/shoppingCards/345", request);
 
         userRepository.save(userBefore);
     }
