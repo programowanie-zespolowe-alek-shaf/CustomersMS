@@ -38,6 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterAfter(new pl.agh.customers.application.config.JwtTokenAuthenticationFilter(jwtConfig, tokenHolder), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, jwtConfig.getUri()).permitAll()
+                .antMatchers("/actuator/**").hasRole("ADMIN")
                 .anyRequest().authenticated();
     }
 
