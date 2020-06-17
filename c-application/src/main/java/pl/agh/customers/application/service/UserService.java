@@ -1,12 +1,17 @@
 package pl.agh.customers.application.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import net.minidev.json.JSONObject;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import pl.agh.customers.application.dto.UserPostRequestDTO;
 import pl.agh.customers.application.dto.UserPutRequestDTO;
+import pl.agh.customers.application.rest.MicroService;
+import pl.agh.customers.application.rest.RestClient;
 import pl.agh.customers.common.exception.BadRequestException;
+import pl.agh.customers.common.exception.NotFoundException;
 import pl.agh.customers.common.response.ListResponse;
 import pl.agh.customers.common.response.UserResponse;
 import pl.agh.customers.common.util.ListUtil;
@@ -19,21 +24,20 @@ import pl.agh.customers.mysql.repository.UserRolesRepository;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final UserRolesRepository userRolesRepository;
+    private final RestClient restClient;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    @Autowired
-    public UserService(UserRepository userRepository, UserRolesRepository userRolesRepository) {
-        this.userRepository = userRepository;
-        this.userRolesRepository = userRolesRepository;
-    }
-
-    public UserResponse create(UserPostRequestDTO userDTO) throws BadRequestException {
+    public UserResponse create(UserPostRequestDTO userDTO) throws BadRequestException, NotFoundException {
         if (userRepository.existsById(userDTO.getUsername())) {
             throw new BadRequestException("Username is used");
+        }
+        if (userDTO.getLastShoppingCardId() != null) {
+            updateShoppingCart(userDTO.getUsername(), userDTO.getLastShoppingCardId());
         }
         User user = userDTO.toEntity();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -62,10 +66,13 @@ public class UserService {
         return userOpt.map(UserResponse::new).orElse(null);
     }
 
-    public UserResponse update(String username, UserPutRequestDTO userDTO) throws BadRequestException {
+    public UserResponse update(String username, UserPutRequestDTO userDTO) throws NotFoundException, BadRequestException {
         Optional<User> userOpt = userRepository.findById(username);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
+            if (userDTO.getLastShoppingCardId() != null) {
+                updateShoppingCart(user.getUsername(), userDTO.getLastShoppingCardId());
+            }
             user.setFirstName(userDTO.getFirstName());
             user.setLastName(userDTO.getLastName());
             user.setEmail(userDTO.getEmail());
@@ -111,4 +118,17 @@ public class UserService {
                 () -> new UsernameNotFoundException(String.format("Username '%s' not found", username)));
 
     }
+
+    private void updateShoppingCart(String username, Long shoppingCardId) throws NotFoundException, BadRequestException {
+        JSONObject request = new JSONObject();
+        request.put("username", username);
+        try {
+            restClient.put(MicroService.CART_MS, "/shoppingCards/" + shoppingCardId, request);
+        } catch (HttpClientErrorException.NotFound e) {
+            throw new NotFoundException("shopping cart does not exist");
+        } catch (HttpClientErrorException.Forbidden e) {
+            throw new BadRequestException("shopping cart has different owner");
+        }
+    }
+
 }

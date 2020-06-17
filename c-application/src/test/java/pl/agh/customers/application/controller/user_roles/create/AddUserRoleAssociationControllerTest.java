@@ -5,12 +5,14 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import pl.agh.customers.application.rest.RestClient;
 import pl.agh.customers.mysql.entity.UserRoles;
 import pl.agh.customers.mysql.enums.RoleEnum;
 import pl.agh.customers.mysql.repository.UserRolesRepository;
@@ -32,6 +34,8 @@ public class AddUserRoleAssociationControllerTest {
     private MockMvc mvc;
     @Autowired
     private UserRolesRepository userRolesRepository;
+    @MockBean
+    private RestClient restClient;
 
     @Test
     public void successTest() throws Exception {

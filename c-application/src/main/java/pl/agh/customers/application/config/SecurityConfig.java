@@ -12,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import pl.agh.customers.application.rest.token.TokenHolder;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -21,8 +22,9 @@ import javax.servlet.http.HttpServletResponse;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
-    private final pl.agh.customers.application.config.JwtConfig jwtConfig;
+    private final JwtConfig jwtConfig;
     private final PasswordEncoder encoder;
+    private final TokenHolder tokenHolder;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -33,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint((req, rsp, e) -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED))
                 .and()
                 .addFilter(new pl.agh.customers.application.config.JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig))
-                .addFilterAfter(new pl.agh.customers.application.config.JwtTokenAuthenticationFilter(jwtConfig), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new pl.agh.customers.application.config.JwtTokenAuthenticationFilter(jwtConfig, tokenHolder), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, jwtConfig.getUri()).permitAll()
                 .anyRequest().authenticated();
